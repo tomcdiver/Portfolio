@@ -1,32 +1,66 @@
-document.getElementById("year").textContent =
-    new Date().getFullYear();
+document.addEventListener("DOMContentLoaded", () => {
+
+    const yearElement = document.getElementById("year");
+
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+    }
 
 
-const observer = new IntersectionObserver(
-    (entries) => {
+    const revealElements = document.querySelectorAll(
+        ".section, .project-section, .showcase-card"
+    );
 
-        entries.forEach((entry) => {
 
-            if (entry.isIntersecting) {
+    revealElements.forEach((element) => {
+        element.classList.add("reveal");
+    });
 
-                entry.target.classList.add("visible");
 
-            }
+    const observer = new IntersectionObserver(
+        (entries) => {
+
+            entries.forEach((entry) => {
+
+                if (entry.isIntersecting) {
+
+                    entry.target.classList.add("visible");
+
+                    observer.unobserve(entry.target);
+
+                }
+
+            });
+
+        },
+        {
+            threshold: 0.08
+        }
+    );
+
+
+    revealElements.forEach((element) => {
+        observer.observe(element);
+    });
+
+
+    const videos = document.querySelectorAll("video");
+
+
+    videos.forEach((video) => {
+
+        video.addEventListener("play", () => {
+
+            videos.forEach((otherVideo) => {
+
+                if (otherVideo !== video) {
+                    otherVideo.pause();
+                }
+
+            });
 
         });
 
-    },
-
-    {
-        threshold: 0.1
-    }
-);
-
-
-document
-    .querySelectorAll("section")
-    .forEach((section) => {
-
-        observer.observe(section);
-
     });
+
+});
